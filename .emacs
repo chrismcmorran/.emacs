@@ -11,13 +11,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (## company sr-speedbar evil))))
+ '(package-selected-packages (quote (stickyfunc-enhance ## company sr-speedbar evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(popup-face ((t (:inherit default :background "black" :foreground "brightcyan"))))
+ '(popup-summary-face ((t (:inherit popup-face :foreground "magenta"))))
+ '(popup-tip-face ((t (:background "black" :foreground "magenta")))))
 
 ;; Enable Vim Bindings
 
@@ -80,3 +82,27 @@
 ;; Set up EDE
 (require 'ede)
 (global-ede-mode)
+
+(require 'stickyfunc-enhance)
+(global-semantic-idle-summary-mode 1)
+(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+
+
+;; Code folding
+(add-hook 'c-mode-common-hook   'hs-minor-mode)
+
+
+(global-set-key (kbd "RET") 'newline-and-indent)  ; automatically indent when press RET
+
+;; Insert parenthesis
+    (setq skeleton-pair t)
+    (global-set-key "(" 'skeleton-pair-insert-maybe)
+    (global-set-key "[" 'skeleton-pair-insert-maybe)
+(global-set-key "{" 'skeleton-pair-insert-maybe)
+
+
+;; Enable line numbers
+(linum-mode 1)
+)
+;; Show matching braces
+(show-paren-mode 1)
