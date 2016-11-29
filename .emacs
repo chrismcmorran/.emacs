@@ -1,108 +1,108 @@
-(require 'package) ;; You might already have this line
+;; Use MELPA
+(require 'package)
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/"))
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize) ;; You might already have this line
+(package-initialize)
 
+;; Turn on Vim Keybindings
+(require 'evil)
+(evil-mode 1)
+
+;; Show Line Numbers
+(global-linum-mode 1)
+(setq linum-format "%d ") ;; Adds a single space between the line numbers and the buffer. 
+
+;; Highlight the Matching Brace
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+
+;; Enable Auto-Complete
+;;(require 'auto-complete)
+;;(auto-complete-mode 1)
+;;(ac-config-default)
+
+;; Enable Yasnippet
+(require 'yasnippet)
+(yas-global-mode 1)
+
+
+;; === COMPANY MODE ===
+(require 'company)
+(global-company-mode 1)
+(add-hook 'global-init-hook 'global-company-mode)  ;; Enables company mode in all buffers.
+(add-to-list 'company-backends 'company-c-headers) ;; Enables C header lookup in C-mode.
+(push 'company-rtags company-backends)             ;; Adds rtags as a company backend.
+;;(global-set-key "\t" 'company-complete-common)     ;; Tab invokes completions.
+(setq company-idle-delay 0)                        ;; Always complete everything.
+(setq company-minimum-prefix-length 1)             ;; Start completing after 1 character is typed.
+
+;; RTags Support
+;; Start RTags if it is not running.
+(setq rtags-path "/usr/local/Cellar/rtags/2.3_1/bin")
+(rtags-start-process-unless-running)
+;; Start RTags in C/C++ mode.
+(add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
+(add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
+(setq rtags-autostart-diagnostics t) ;; Start diagnostics
+(setq rtags-completions-enabled t)   ;; Enable completions
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (stickyfunc-enhance ## company sr-speedbar evil))))
+ '(ansi-color-names-vector
+   ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
+ '(custom-enabled-themes (quote (wombat)))
+ '(package-selected-packages
+   (quote
+    (define-word spotify helm-spotify ansi jabber srefactor iedit swift-mode xcode-mode flycheck-tip flycheck-pos-tip flycheck company-quickhelp slime ## theme-changer use-package stickyfunc-enhance sr-speedbar smartparens slack scheme-complete rtags project-explorer pcmpl-args ggtags folding flyspell-popup flyspell-correct-popup flymake-google-cpplint flycheck-swift flycheck-google-cpplint evil emms cpputils-cmake company-c-headers cmake-ide clippy buffer-move bongo ampc ac-helm ac-clang)))
+ '(send-mail-function (quote sendmail-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(popup-face ((t (:inherit default :background "black" :foreground "brightcyan"))))
- '(popup-summary-face ((t (:inherit popup-face :foreground "magenta"))))
- '(popup-tip-face ((t (:background "black" :foreground "magenta")))))
-
-;; Enable Vim Bindings
-
-(require 'evil)
-(evil-mode 1)
+ '(company-preview ((t (:background "black" :foreground "magenta"))))
+ '(company-tooltip ((t (:background "black" :foreground "cyan"))))
+ '(company-tooltip-selection ((t (:background "green")))))
 
 
-(require 'auto-complete)
-(global-auto-complete-mode t)
-(ac-config-default)
-(setq ac-delay 0.1)
+;; Set mode based on file extension.
+(add-to-list 'auto-mode-alist '("\\.rkt\\'" . scheme-mode))
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
 
-;; Set the theme
-(load-theme 'manoj-dark)'
+(defun my-add-pretty-lambda ()
+  "make some word or string show as pretty Unicode symbols"
+  (setq prettify-symbols-alist
+        '(
+          ("lambda" . 955) ; λ
+          ("->" . 8594)    ; →
+          ("=>" . 8658)    ; ⇒
+          ("map" . 8614)   ; ↦
+          )))
 
-;; Set up ggtags
-(require 'setup-ggtags)
-(require 'ggtags)
-(add-hook 'c-mode-common-hook
-	  (lambda ()
-	    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-	      (ggtags-mode 1))))
-
-(define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
-(define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
-(define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
-(define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
-(define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
-(define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
-(define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
-
-;; Open a project explorer on C-mode
-(add-hook 'c-mode-common-hook 'sr-speedbar-open)
+(add-hook 'clojure-mode-hook 'my-add-pretty-lambda)
+(add-hook 'haskell-mode-hook 'my-add-pretty-lambda)
+(add-hook 'shen-mode-hook 'my-add-pretty-lambda)
+(add-hook 'tex-mode-hook 'my-add-pretty-lambda)
+(add-hook 'scheme-mode-hook 'my-add-pretty-lambda)
+(global-prettify-symbols-mode 1)
 
 
-;; Enable Company Mode for completion
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(require 'cc-mode)
-(setq company-backends (delete 'company-semantic company-backends))
-(define-key c-mode-map  [(tab)] 'company-complete)
-(define-key c++-mode-map  [(tab)] 'company-complete)
-
-;; Enable header file lookup
-(require 'company-c-headers)
-(add-to-list 'company-backends 'company-c-headers)
-(add-to-list 'company-c-headers-path-system "/usr/include/c++/4.2.1")
-
-;; Enable CEDET
-(load-file (concat user-emacs-directory "/cedet/cedet-devel-load.el"))
-(load-file (concat user-emacs-directory "cedet/contrib/cedet-contrib-load.el"))
-
-(require 'semantic)
-(global-semanticdb-minor-mode 1)
-(global-semantic-idle-scheduler-mode 1)
-(semantic-mode 1)
-(global-semantic-idle-scheduler-mode 1)
+;; Flycheck popup
+(require 'flycheck)
+(global-flycheck-mode 1)
+(require 'flycheck-tip)
+(setq flycheck-display-errors-function 'ignore)
+(setq flycheck-display-errors-delay 0)
 
 
-;; Set up EDE
-(require 'ede)
-(global-ede-mode)
+;; Enable iMessage
+(add-to-list 'load-path "~/.emacs.d/imessage")
+(add-to-list 'load-path "~/.emacs.d/s")
+(require 's)
+(require 'imessage)
+;; iMessage should be enabled by default
 
-(require 'stickyfunc-enhance)
-(global-semantic-idle-summary-mode 1)
-(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+(setq tab-width 4); tabs should use 4 spaces.
 
-
-;; Code folding
-(add-hook 'c-mode-common-hook   'hs-minor-mode)
-
-
-(global-set-key (kbd "RET") 'newline-and-indent)  ; automatically indent when press RET
-
-;; Insert parenthesis
-    (setq skeleton-pair t)
-    (global-set-key "(" 'skeleton-pair-insert-maybe)
-    (global-set-key "[" 'skeleton-pair-insert-maybe)
-(global-set-key "{" 'skeleton-pair-insert-maybe)
-
-
-;; Enable line numbers
-(linum-mode 1)
-)
-;; Show matching braces
-(show-paren-mode 1)
