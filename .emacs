@@ -45,6 +45,14 @@
 (add-hook 'objc-mode-hook 'irony-mode)
 
 
+(require 'ag)
+(require 'dumb-jump)
+(global-set-key (kbd "C-j") 'dumb-jump-go)
+(global-set-key (kbd "M-j") 'dumb-jump-back)
+
+(require 'iedit)
+(global-set-key (kbd "M-r") 'iedit-mode)
+
 ; Company Backends
 (require 'company-irony)
  (eval-after-load 'company
@@ -64,20 +72,29 @@
 ; Yasnippet
 (require 'yasnippet)
 (yas-global-mode t)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-idle-delay 0)
+ '(company-minimum-prefix-length 0)
  '(ede-project-directories
    (quote
     ("/Users/chris/Development/javatest" "/Users/chris/Development/repeat")))
+ '(global-company-mode t)
  '(package-selected-packages
    (quote
-    (smartparens cpp-auto-include company-emacs-eclim ecb yasnippet evil company-irony-c-headers company-irony color-theme-solarized color-theme-sanityinc-solarized))))
+    (iedit ag smartparens cpp-auto-include company-emacs-eclim ecb yasnippet evil company-irony-c-headers company-irony color-theme-solarized color-theme-sanityinc-solarized))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-preview-common ((t (:inherit company-preview :foreground "Black"))))
+ '(company-tooltip ((t (:background "controlColor"))))
+ '(company-tooltip-annotation ((t (:inherit company-tooltip :foreground "keyboardFocusIndicatorColor"))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :foreground "Cyan"))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :foreground "White")))))
