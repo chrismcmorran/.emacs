@@ -45,13 +45,12 @@
 (add-hook 'objc-mode-hook 'irony-mode)
 
 
-(require 'ag)
-(require 'dumb-jump)
-(global-set-key (kbd "C-j") 'dumb-jump-go)
-(global-set-key (kbd "M-j") 'dumb-jump-back)
+(setq rtags-path "/usr/local/Cellar/rtags/2.7")
+(require 'rtags)
+(global-set-key (kbd "C-j") 'rtags-find-symbol-at-point)
+(global-set-key (kbd "M-j") 'rtags-backward-token)
 
-(require 'iedit)
-(global-set-key (kbd "M-r") 'iedit-mode)
+(global-set-key (kbd "M-r") 'rtags-rename-symbol)
 
 ; Company Backends
 (require 'company-irony)
@@ -72,6 +71,14 @@
 ; Yasnippet
 (require 'yasnippet)
 (yas-global-mode t)
+
+
+
+; RTags
+(rtags-start-process-unless-running)
+(add-hook 'c-mode-common-hook 'rtags-start-process-unless-running)
+(add-hook 'c++-mode-common-hook 'rtags-start-process-unless-running)
+(rtags-restart-process)
 
 
 (custom-set-variables
